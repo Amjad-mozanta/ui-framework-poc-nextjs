@@ -1,6 +1,17 @@
+"use client"
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import StyledComponentsRegistry from '../lib/AntdRegistry';
+import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";
+import { ConfigProvider } from 'antd';
+import ctheme from '../theme/themeConfig';
+import { Layout } from 'antd';
+import React, {useState} from "react"
+import {Menu, Button, theme } from 'antd';
+
+const {Content} = Layout;
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,9 +25,35 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        
+      <StyledComponentsRegistry>
+      <ConfigProvider theme={ctheme}>
+      <Layout>
+      <Sidebar collapsed={collapsed} />
+      <Layout>
+        <Header colorBgContainer={colorBgContainer} collapsed={collapsed} setCollapsed={setCollapsed}/>
+        <Content
+          style={{
+            margin: '24px 16px',
+            padding: 24,
+            minHeight: "100vh",
+            background: colorBgContainer,
+          }}
+        >
+          {children}
+        </Content>
+        </Layout>
+        </Layout>
+      </ConfigProvider>
+      </StyledComponentsRegistry>
+      </body>
     </html>
   )
 }
